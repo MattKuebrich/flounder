@@ -1,6 +1,8 @@
 # flounder
 usb midi keyboard + controls + stereo audio
 
+<img src="https://github.com/MattKuebrich/flounder/blob/main/images/flounder_v1.1_board.jpg" width="500">
+
 Tech details:
 * 12 potentiometers
 * 6 function buttons
