@@ -20,7 +20,7 @@ This PCB requires minimal parts, but there are a few tricky bits. A SMD header i
 
 Flounder uses the PT8211 stereo DAC chip, which isn't widely available, but can be found either as part of [this low cost kit from PJRC](https://www.pjrc.com/store/pt8211_kit.html), on [AliExpress](https://www.aliexpress.com/wholesale?catId=0&initiative_id=SB_20220626100338&SearchText=PT8211&spm=a2g0o.home.1000002.0) or [this alternative](https://www.lcsc.com/product-detail/Digital-To-Analog-Converters-DACs_TM8211_C92003.html) from LCSC, which I haven't tried but should work. 
 
-**Software notes:**
+**Software installation:**
 
 In order to program the Teensy 4.0, you'll need to install [TeensyDuino](https://www.pjrc.com/teensy/teensyduino.html). You'll also need to install the [FastTouch library](https://github.com/adrianfreed/FastTouch), which is needed for the touch keyboard. Download FastTouch from Github and then in TeensyDuino, go to Sketch -> Include Library -> Add .ZIP Library and select the .ZIP file. 
 
