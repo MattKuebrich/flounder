@@ -27,3 +27,7 @@ In order to program the Teensy 4.0, you'll need to install [TeensyDuino](https:/
 Plug the [(USB Micro-B to standard USB) cable](https://www.pjrc.com/store/cable_usb_micro_b.html) from the Teensy to your computer. In TeensyDuino, under Tools->Port, you should see select the Teensy there. Also, Tools->USB Type should be set to "Serial + MIDI + Audio". 
 
 The audio output uses both the on-board jack and USB audio. In code, the output can be adjusted to be suitable for headphones or line level.
+
+**Power:**
+
+founder is usually powered via the USB connection to your computer or another MIDI host (like monome norns). When using it as an audio source, it can also be powered by a cellphone charger or portable power bank.
