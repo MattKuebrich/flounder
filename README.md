@@ -1,7 +1,8 @@
+![flounder](https://github.com/MattKuebrich/flounder/blob/main/images/flounder_v1_assembled.jpg)
+
 # flounder
 usb midi keyboard + controls + stereo audio
 
-![flounder](https://github.com/MattKuebrich/flounder/blob/main/images/flounder_v1_assembled.jpg)
 
 Tech details:
 * 12 MIDI mappable potentiometers
