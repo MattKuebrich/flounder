@@ -1,13 +1,27 @@
-// based on rob hordijk's blippoo box
+// roundabout flounder
 
-//this is based on the 2018 version of the blippoo box, explained here:
+// program: blipo_2018
+
+// description: an attempt to digitally emulate Rob Hordijk's Blippoo Box.
+// notes: this is based on the 2018 version of the Blippoo Box, explained here:
 // https://www.youtube.com/watch?v=ftyw5_hX4H0&t=306s
 
 // KNOB LAYOUT
 
 // RATE A         RATE B          PEAK 1                 PEAK 2
 // RUNGLER > A    RUNGLER > B     RUNGLER > PEAK 1       RUNGLER > PEAK 2
-// S&H > RATE A   S&H > RATE A    S&H SPREADS PEAKS      FILTER FEEDBACK 
+// S&H > RATE A   S&H > RATE A    S&H SPREADS PEAKS      FILTER FEEDBACK
+
+// FIRST FUNCTION BUTTON = TOGGLES S&H MODE BETWEEN R MIX AND TRI B.
+
+// further notes:
+// the on-board LED will light up when toggling between the S&H mode.
+// "filter feedback" crudely attempts to add the filter distortion in the original hardware.
+// rather than a fixed value, i've made this adjustable since this knob was original an "audio in"
+// which flounder doesn't support.
+
+//set to 1 for use headphone output, 0 for line out
+int headphoneout = 0;
 
 #include "effect_samplehold.h"
 #include "effect_rungler.h"
@@ -16,7 +30,7 @@
 #include <FastTouch.h>
 
 #include <Audio.h>
-#include <Wire.h> 
+#include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
@@ -106,8 +120,8 @@ AudioConnection          patchCord40(mixer8, 0, pt8211_1, 1);
 
 //touch stuff
 int touchkeys[] = {0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 28, 29, 30, 31, 32, 33};
-int upperthreshold = 62; 
-int lowerthreshold = 50; //55 
+int upperthreshold = 62;
+int lowerthreshold = 50; //55
 
 int touches = 0;
 int ledState = LOW;     // the current state of LED
@@ -118,7 +132,6 @@ int touches2 = 0;
 int ledState2 = LOW;     // the current state of LED
 int lastButtonState2;    // the previous state of button
 int currentButtonState2; // the current state of button
-
 
 float oscAfreq;
 float oscBfreq;
@@ -137,7 +150,7 @@ float filterdrive;
 float filterpbgain;
 float FilterFeedback;
 
-int SHmode = 3; //i think 3 is my fav
+int SHmode = 3; // runglers mixed
 
 void setup() {
   AudioMemory(20);
@@ -158,12 +171,17 @@ void setup() {
   waveformMod4.amplitude(1);
 
   //output mixer for usb
-  mixer1.gain(0, 1);  //should this be set to 0.5? or try 2 amps set to 1 going to the different channels?
+  mixer1.gain(0, 1);  
   mixer1.gain(1, 1);
 
-  //output mixer for output jack, lowered for headphones
-  mixer8.gain(0, 1);  // 0.1 for headphones, 1 for line out
-  mixer8.gain(1, 1);
+  //output mixer for output jack
+  if (headphoneout) {
+    mixer8.gain(0, 0.1);  // lower output for headphones
+    mixer8.gain(1, 0.1);
+  } else {
+    mixer8.gain(0, 1);  // line out
+    mixer8.gain(1, 1);
+  }
 
   //s&h trigger selection
   if (SHmode == 1) {
@@ -212,69 +230,69 @@ void setup() {
 
 void loop() {
 
-//looks for a press of the first function button and toggle built in led
+  //looks for a press of the first function button and toggle built in led
   if (fastTouchRead(28) > upperthreshold) {
     touches = 1;
   } else if (fastTouchRead(28) < lowerthreshold) {
     touches = 0;
   }
 
-lastButtonState    = currentButtonState;      // save the last state
-currentButtonState = touches; // read new state
+  lastButtonState    = currentButtonState;      // save the last state
+  currentButtonState = touches; // read new state
 
-if (lastButtonState == HIGH && currentButtonState == LOW) {
+  if (lastButtonState == HIGH && currentButtonState == LOW) {
 
-  // toggle state of LED
-  ledState = !ledState;
+    // toggle state of LED
+    ledState = !ledState;
 
-  // control LED arccoding to the toggled state
-  digitalWrite(LED_BUILTIN, ledState);
-  //analogWrite(LED_BUILTIN, brightness); //control brightness of built-in LED, could be useful for "modes"
-}
+    // control LED arccoding to the toggled state
+    digitalWrite(LED_BUILTIN, ledState);
+    //analogWrite(LED_BUILTIN, brightness); //control brightness of built-in LED, could be useful for "modes"
+  }
 
 
 
-//looks for a press of the first function button and toggle built in led
+  //looks for a press of the first function button and toggle built in led
   if (fastTouchRead(29) > upperthreshold) {
     touches2 = 1;
   } else if (fastTouchRead(29) < lowerthreshold) {
     touches2 = 0;
   }
 
-lastButtonState2    = currentButtonState2;      // save the last state
-currentButtonState2 = touches2; // read new state
+  lastButtonState2    = currentButtonState2;      // save the last state
+  currentButtonState2 = touches2; // read new state
 
-if (lastButtonState2 == HIGH && currentButtonState2 == LOW) {
- 
-  // toggle state of LED
-  ledState2 = !ledState2;
+  if (lastButtonState2 == HIGH && currentButtonState2 == LOW) {
 
-  // control LED arccoding to the toggled state
-  //digitalWrite(LED_BUILTIN, ledState);
-}
+    // toggle state of LED
+    ledState2 = !ledState2;
+
+    // control LED arccoding to the toggled state
+    //digitalWrite(LED_BUILTIN, ledState);
+  }
 
 
-//toggle between s&h modes
-if (ledState == HIGH){
- SHmode = 3;
- 
-} else {
- SHmode = 1;
-}
+  //toggle between s&h modes
+  if (ledState == HIGH) {
+    SHmode = 1;
 
-//toggle rungler loop
-if (ledState2 == HIGH){
- rungler1.loopEnable(1);
- rungler2.loopEnable(1);
- Serial.println("loop enabled");
- 
-} else {
- rungler1.loopEnable(0);
- rungler2.loopEnable(0);
- Serial.println("loop disabled");
-}
+  } else {
+    SHmode = 3;
+  }
 
-//Serial.println(SHmode);
+  //toggle rungler loop
+  if (ledState2 == HIGH) {
+    rungler1.loopEnable(1);
+    rungler2.loopEnable(1);
+    Serial.println("loop enabled");
+
+  } else {
+    rungler1.loopEnable(0);
+    rungler2.loopEnable(0);
+    Serial.println("loop disabled");
+  }
+
+  //Serial.println(SHmode);
 
   //s&h trigger selection
   if (SHmode == 1) {
@@ -310,72 +328,72 @@ if (ledState2 == HIGH){
 
 
 
-//all pots
+  //all pots
 
-// oscAfreq  = mapf(analogRead(POT01), 0, 1023, 0.1, 20000);
-oscAfreq = fscale( 0, 1023.0, 0.1, 12000.0, analogRead(POT01), -9.3); //pdf says oscs go to 12khz, sc goes to 20000
-//Serial.println(oscAfreq);
+  // oscAfreq  = mapf(analogRead(POT01), 0, 1023, 0.1, 20000);
+  oscAfreq = fscale( 0, 1023.0, 0.1, 12000.0, analogRead(POT01), -9.3); //pdf says oscs go to 12khz, sc goes to 20000
+  //Serial.println(oscAfreq);
 
-// oscBfreq  = map(analogRead(POT02), 0, 1023, 0, 60);
-oscBfreq = fscale( 0, 1023.0, 0.1, 12000.0, analogRead(POT02), -9.3);
+  // oscBfreq  = map(analogRead(POT02), 0, 1023, 0, 60);
+  oscBfreq = fscale( 0, 1023.0, 0.1, 12000.0, analogRead(POT02), -9.3);
 
-//peak1 = mapf(analogRead(POT03), 0, 1023, 0, 12000);
-peak1 = fscale( 0, 1023.0, 20, 12000.0, analogRead(POT03), -9.3);
+  //peak1 = mapf(analogRead(POT03), 0, 1023, 0, 12000);
+  peak1 = fscale( 0, 1023.0, 20, 12000.0, analogRead(POT03), -9.3);
 
-//peak2 = mapf(analogRead(POT04), 0, 1023, 0, 12000);
-peak2 = fscale( 0, 1023.0, 20, 12000.0, analogRead(POT04), -9.3);
+  //peak2 = mapf(analogRead(POT04), 0, 1023, 0, 12000);
+  peak2 = fscale( 0, 1023.0, 20, 12000.0, analogRead(POT04), -9.3);
 
-RunglerAtoOscB = mapf(analogRead(POT05), 0, 1023, 0, 1.0);
-RunglerBtoOscA = mapf(analogRead(POT06), 0, 1023, 0, 1.0);
+  RunglerAtoOscB = mapf(analogRead(POT05), 0, 1023, 0, 1.0);
+  RunglerBtoOscA = mapf(analogRead(POT06), 0, 1023, 0, 1.0);
 
-RunglerAtoPeak1 = mapf(analogRead(POT07), 0, 1023, 0, 1.0);
-RunglerBtoPeak2 = mapf(analogRead(POT08), 0, 1023, 0, 1.0);
+  RunglerAtoPeak1 = mapf(analogRead(POT07), 0, 1023, 0, 1.0);
+  RunglerBtoPeak2 = mapf(analogRead(POT08), 0, 1023, 0, 1.0);
 
-SHtoOscA   = mapf(analogRead(POT09), 0, 1023, 0, 1.0);
-SHtoOscB   = mapf(analogRead(POT10), 0, 1023, 0, 1.0);
+  SHtoOscA   = mapf(analogRead(POT09), 0, 1023, 0, 1.0);
+  SHtoOscB   = mapf(analogRead(POT10), 0, 1023, 0, 1.0);
 
-SHSpreadPeaks    = mapf(analogRead(POT11), 0, 1023, 0, 1.0); //used as gain, so this SHOULD be 0 to 1, right? if using -1 to 1 the knob would need to be set at the middle to give NO modulation.
+  SHSpreadPeaks    = mapf(analogRead(POT11), 0, 1023, 0, 1.0); //used as gain, so this SHOULD be 0 to 1, right? if using -1 to 1 the knob would need to be set at the middle to give NO modulation.
 
-//pot 12 on the 2018 blippoo is usually a volume control, but testing out filter drive
-//filterdrive    = mapf(analogRead(POT12), 0, 1023, 1.0, 4.0);
-FilterFeedback    = mapf(analogRead(POT12), 0, 1023, 0, 4); 
-
-
- Serial.println(FilterFeedback);
+  //pot 12 on the 2018 blippoo is usually a volume control, but testing out filter drive
+  //filterdrive    = mapf(analogRead(POT12), 0, 1023, 1.0, 4.0);
+  FilterFeedback    = mapf(analogRead(POT12), 0, 1023, 0, 4);
 
 
-waveformMod1.frequency(oscAfreq); //tri
-waveformMod2.frequency(oscAfreq); //square
-
-waveformMod3.frequency(oscBfreq); //tri
-waveformMod4.frequency(oscBfreq); //square
-
-// stuff going into filter cutoff
-mixer2.gain(0, RunglerAtoPeak1 / 2);
-mixer2.gain(1, SHSpreadPeaks / 2);
-mixer2.gain(2, FilterFeedback / 2);
+  //Serial.println(FilterFeedback);
 
 
+  waveformMod1.frequency(oscAfreq); //tri
+  waveformMod2.frequency(oscAfreq); //square
 
-mixer5.gain(0, RunglerBtoPeak2 / 2);
-mixer5.gain(1, (SHSpreadPeaks / 2)*-1); //??? trying to invert this to spread
-mixer5.gain(2, FilterFeedback / 2);
+  waveformMod3.frequency(oscBfreq); //tri
+  waveformMod4.frequency(oscBfreq); //square
+
+  // stuff going into filter cutoff
+  mixer2.gain(0, RunglerAtoPeak1 / 2);
+  mixer2.gain(1, SHSpreadPeaks / 2);
+  mixer2.gain(2, FilterFeedback / 2);
 
 
 
-//stuff going into OscAfreq
-mixer3.gain(0, RunglerBtoOscA / 2);
-mixer3.gain(1, SHtoOscA / 2);
+  mixer5.gain(0, RunglerBtoPeak2 / 2);
+  mixer5.gain(1, (SHSpreadPeaks / 2) * -1); //??? trying to invert this to spread
+  mixer5.gain(2, FilterFeedback / 2);
 
-//stuff going into OscBfreq
-mixer4.gain(0, SHtoOscB / 2);
-mixer4.gain(1, RunglerAtoOscB / 2);
 
-ladder1.frequency(peak1);
-ladder2.frequency(peak2);
 
-//ladder1.inputDrive(filterdrive);
-//ladder2.inputDrive(filterdrive);
+  //stuff going into OscAfreq
+  mixer3.gain(0, RunglerBtoOscA / 2);
+  mixer3.gain(1, SHtoOscA / 2);
+
+  //stuff going into OscBfreq
+  mixer4.gain(0, SHtoOscB / 2);
+  mixer4.gain(1, RunglerAtoOscB / 2);
+
+  ladder1.frequency(peak1);
+  ladder2.frequency(peak2);
+
+  //ladder1.inputDrive(filterdrive);
+  //ladder2.inputDrive(filterdrive);
 
 
 } //end of loop

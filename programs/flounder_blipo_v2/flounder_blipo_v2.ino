@@ -1,17 +1,20 @@
-// based on rob hordijk's blippoo box
+// roundabout flounder
 
-//this version is based on the V2 version of the blippo box (as is the Supercollider/Norns version).
+// program: blipo_v2
 
-
-// issues
-// clicks when using usbaudio. It's not there when using audio out, although then there is noise, which I also need to look into.
-// https://forum.pjrc.com/threads/54239-USB-Audio-Clicking-Noise?p=191549&viewfull=1#post191549
-
+// description: an attempt to digitally emulate Rob Hordijk's Blippoo Box.
+// notes: this is based on the V2 version of the Blippoo Box (as is the Supercollider/Norns version).
 
 // KNOB LAYOUT
+
 //RATE A       RATE B      PEAK 1           PEAK 2
 //FM B TO A    FM A TO B   S&H TO RES       RUNGLER A TO RES
 //RUNGLER A    RUNGER B    S&H TO RATE A    RUNGLER B TO RES
+
+// FIRST FUNCTION BUTTON = TOGGLES S&H MODE 
+
+//set to 1 for use headphone output, 0 for line out
+int headphoneout = 0;
 
 #include "effect_samplehold.h"
 #include "effect_rungler.h"
@@ -27,28 +30,29 @@
 
 
 // GUItool: begin automatically generated code
-AudioMixer4              mixer4;         //xy=144,1087
-AudioMixer4              mixer3;         //xy=153,825
-AudioSynthWaveformModulated waveformMod4;   //xy=355,1041
-AudioSynthWaveformModulated waveformMod3;   //xy=357,1007
-AudioSynthWaveformModulated waveformMod1;   //xy=361,791
-AudioSynthWaveformModulated waveformMod2;   //xy=362,828
-AudioMixer4              mixer6;         //xy=611,617
-AudioEffectRungler       rungler1;       //xy=616,1030
-AudioMixer4              mixer7;         //xy=644,710
-AudioEffectRungler       rungler2;       //xy=661,1133
-AudioEffectComparator    compare1;       //xy=773,835
-AudioEffectSampleAndHold samplehold1;    //xy=789,689
-AudioAnalyzePrint        print1;         //xy=888,1179
-AudioMixer4              mixer2;         //xy=935,1006
-AudioMixer4              mixer8;         //xy=995.0000267028809,656.1110820770264
-AudioFilterLadder        ladder1;        //xy=1119,766
-AudioMixer4              mixer5;         //xy=1129,1073
-AudioFilterLadder        ladder2;        //xy=1153,885
-AudioAmplifier           amp4;           //xy=1359.77779006958,915.9999942779541
-AudioMixer4              mixer1;         //xy=1449,828
-AudioOutputUSB           usb1;           //xy=1604,825
-AudioOutputPT8211        pt8211_1;       //xy=1686,895
+AudioMixer4              mixer4;         //xy=263.33331298828125,816.6666667461395
+AudioMixer4              mixer3;         //xy=272.33331298828125,554.6666667461395
+AudioSynthWaveformModulated waveformMod4;   //xy=474.33331298828125,770.6666667461395
+AudioSynthWaveformModulated waveformMod3;   //xy=476.33331298828125,736.6666667461395
+AudioSynthWaveformModulated waveformMod1;   //xy=480.33331298828125,520.6666667461395
+AudioSynthWaveformModulated waveformMod2;   //xy=481.33331298828125,557.6666667461395
+AudioMixer4              mixer6;         //xy=730.3333129882812,346.6666667461395
+AudioEffectRungler       rungler1;       //xy=735.3333129882812,759.6666667461395
+AudioMixer4              mixer7;         //xy=763.3333129882812,439.6666667461395
+AudioEffectRungler       rungler2;       //xy=780.3333129882812,862.6666667461395
+AudioEffectComparator    compare1;       //xy=892.3333129882812,564.6666667461395
+AudioEffectSampleAndHold samplehold1;    //xy=908.3333129882812,418.6666667461395
+AudioAnalyzePrint        print1;         //xy=1007.3333129882812,908.6666667461395
+AudioMixer4              mixer2;         //xy=1054.3333129882812,735.6666667461395
+AudioMixer4              mixer8;         //xy=1114.3333129882812,385.6666667461395
+AudioFilterLadder        ladder1;        //xy=1238.3333129882812,495.6666667461395
+AudioMixer4              mixer5;         //xy=1248.3333129882812,802.6666667461395
+AudioFilterLadder        ladder2;        //xy=1272.3333129882812,614.6666667461395
+AudioAmplifier           amp4;           //xy=1478.3333129882812,644.6666667461395
+AudioMixer4              mixer1;         //xy=1666.6666069030762,557.666690826416
+AudioMixer4              mixer9;         //xy=1671.6667728424072,649.3333206176758
+AudioOutputPT8211        pt8211_1;       //xy=1821.999870300293,451.33337688446045
+AudioOutputUSB           usb1;           //xy=1838.3332023620605,681.3333530426025
 AudioConnection          patchCord1(mixer4, 0, waveformMod3, 0);
 AudioConnection          patchCord2(mixer4, 0, waveformMod4, 0);
 AudioConnection          patchCord3(mixer3, 0, waveformMod1, 0);
@@ -82,14 +86,16 @@ AudioConnection          patchCord30(mixer2, 0, mixer8, 0);
 AudioConnection          patchCord31(mixer8, 0, ladder1, 1);
 AudioConnection          patchCord32(ladder1, 0, mixer1, 0);
 AudioConnection          patchCord33(ladder1, 0, mixer8, 1);
-AudioConnection          patchCord34(mixer5, 0, ladder2, 1);
-AudioConnection          patchCord35(ladder2, amp4);
-AudioConnection          patchCord36(ladder2, 0, mixer5, 1);
-AudioConnection          patchCord37(amp4, 0, mixer1, 1);
-AudioConnection          patchCord38(mixer1, 0, usb1, 0);
-AudioConnection          patchCord39(mixer1, 0, usb1, 1);
+AudioConnection          patchCord34(ladder1, 0, mixer9, 0);
+AudioConnection          patchCord35(mixer5, 0, ladder2, 1);
+AudioConnection          patchCord36(ladder2, amp4);
+AudioConnection          patchCord37(ladder2, 0, mixer5, 1);
+AudioConnection          patchCord38(amp4, 0, mixer1, 1);
+AudioConnection          patchCord39(amp4, 0, mixer9, 1);
 AudioConnection          patchCord40(mixer1, 0, pt8211_1, 0);
 AudioConnection          patchCord41(mixer1, 0, pt8211_1, 1);
+AudioConnection          patchCord42(mixer9, 0, usb1, 0);
+AudioConnection          patchCord43(mixer9, 0, usb1, 1);
 // GUItool: end automatically generated code
 
 
@@ -129,7 +135,7 @@ float RunglerAtoOscB;
 float RunglerBtoOscA;
 float FilterFeedback;
 
-int SHmode = 3; //i think 3 is my fav
+int SHmode = 1; 
 
 void setup() {
   AudioMemory(20);
@@ -154,9 +160,18 @@ void setup() {
   waveformMod4.begin(WAVEFORM_SQUARE);
   waveformMod4.amplitude(1);
 
-  //output mixer
-  mixer1.gain(0, 0.5);
-  mixer1.gain(1, 0.5);
+  //output mixer for usb
+  mixer9.gain(0, 1);
+  mixer9.gain(1, 1);
+
+  //output mixer for output jack
+  if (headphoneout) {
+    mixer1.gain(0, 0.1);  // lower output for headphones
+    mixer1.gain(1, 0.1);
+  } else {
+    mixer1.gain(0, 1);  // line out
+    mixer1.gain(1, 1);
+  }
 
 //FilterFeedback = 0.75/2;  //0.75
 FilterFeedback = 0; //kind of like this without the filter feedback
@@ -165,8 +180,6 @@ FilterFeedback = 0; //kind of like this without the filter feedback
   mixer5.gain(1, FilterFeedback); //for twin peak distortion.
   mixer8.gain(0, 1); 
   mixer8.gain(1, FilterFeedback); //for twin peak distortion.
-
-//0.75
 
   //s&h trigger selection
   if (SHmode == 1) {
@@ -234,7 +247,7 @@ if (lastButtonState == HIGH && currentButtonState == LOW) {
 
 //toggle between s&h modes
 if (ledState == HIGH){
- SHmode = 3;
+ SHmode = 2;
 } else {
  SHmode = 1;
 }
