@@ -4,12 +4,20 @@
 usb midi keyboard + controls + stereo audio
 
 
-Tech details:
+**Tech details:**
 * 12 MIDI mappable potentiometers
 * full octave touch keyboard
 * 6 function buttons
 * stereo output
 * programmable via Teensy 4.0 
+
+**Programs:**
+
+* **midictrl** is a basic midi controller with 12 MIDI-mappable knobs, a full-octave touch MIDI keyboard and octave control (using the 6 "function" buttons). 
+
+*  **blipo_v2 / blipo_2018** are attempts to digitally emulate Rob Hordijk's Blippoo Box.
+
+*  **hardwaretest** helps verify that everything is working properly by sending knob/key values to the serial monitor.
 
 **BOM:**
 
