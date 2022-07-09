@@ -1,9 +1,8 @@
-// roundabout flounder 1.0
-// midi keyboard + controls + stereo audio
+// roundabout flounder 
 
-// hardware test
-
-// after assembling the pcb, run this sketch and follow these steps to verify everything works
+// program: hardwaretest v1.0
+// description: hardware test
+// notes: after assembling the pcb, run this sketch and follow these steps to verify everything works
 
 // 1. open the serial monitor, then move each of the 12 pots and you should see a readout from around 0 to 1024. in the ballpark is fine.
 // 2. touch all the keys and you should see a readout of around 64 when fully touched
@@ -97,7 +96,6 @@ AudioConnection          patchCord4(sine1, 0, pt8211_1, 1);
 
 
 void setup() {
-
   pinMode(13, INPUT_PULLUP);
 
   Serial.begin(9600);
@@ -109,7 +107,6 @@ void setup() {
 
   sine1.frequency(300);
   sine1.amplitude(0.9);
-
 }
 
 void loop() {
@@ -120,7 +117,6 @@ if (detailedtesttouches) {
   testtouches();
 }
 } //end of loop
-
 
 void testtouches(){
   for (int x = 0; x <= 18; x++) {
@@ -150,7 +146,6 @@ void testtouches(){
   }
 }
 
-
 void testtouchesdetailed(){
   for (int x = 0; x <= 18; x++) {
   Serial.print("T");
@@ -161,8 +156,6 @@ void testtouchesdetailed(){
   Serial.println();
   delay(200);
 }
-
-
 
 void testpots() {
   for (int i = 0; i < 12; i++) {
