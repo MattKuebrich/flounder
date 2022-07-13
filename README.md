@@ -7,9 +7,10 @@ usb midi keyboard + controls + stereo audio
 **Tech details:**
 * 12 MIDI mappable potentiometers
 * full octave touch keyboard
-* 6 function buttons
-* stereo output
-* programmable via Teensy 4.0 
+* 6 touch function buttons
+* stereo audio output
+* runs on Teensy 4.0 / fully reprogrammable
+* conceived as a [friend of norns](https://llllllll.co/t/friends-of-norns-gear-accessories-etc/17150) but works with anything that supports MIDI over USB
 
 **Programs:**
 
