@@ -17,6 +17,10 @@ usb midi keyboard + controls + stereo audio
 
 *  **blipo_v2 / blipo_2018** are attempts to digitally emulate Rob Hordijk's Blippoo Box.
 
+* **pitta** is a polysynth with an ADSR, oscmix, filter with LFO, ensemble chorus, and reverb.
+
+* **monoenv** is an single mono oscillator and ADSR envelope, to demonstrate how the touch keyboard works. This can be a basis for a more complicated synth. It also works as a midi controller.
+
 *  **hardwaretest** helps verify that everything is working properly by sending knob/key values to the serial monitor.
 
 **BOM:**
@@ -40,3 +44,7 @@ The audio output uses both the on-board jack and USB audio. In code, the output 
 **Power:**
 
 flounder is usually powered via the USB connection to your computer or another MIDI host (like monome norns). When using it as an audio source, it can also be powered by a cellphone charger or portable power bank.
+
+**Videos:**
+
+https://www.youtube.com/watch?v=Wfl-h9pgLO8&t=12s
