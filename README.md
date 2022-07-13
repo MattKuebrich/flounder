@@ -46,5 +46,4 @@ The audio output uses both the on-board jack and USB audio. In code, the output 
 flounder is usually powered via the USB connection to your computer or another MIDI host (like monome norns). When using it as an audio source, it can also be powered by a cellphone charger or portable power bank.
 
 **Videos:**
-
-https://www.youtube.com/watch?v=Wfl-h9pgLO8&t=12s
+https://www.youtube.com/watch?v=Wfl-h9pgLO8
