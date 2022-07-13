@@ -25,7 +25,7 @@ usb midi keyboard + controls + stereo audio
 
 **BOM:**
 
-https://docs.google.com/spreadsheets/d/1cLHydvrlG6ZNgeznXWJLk1cLfvSbNpC10iksKwk7y4E
+* https://docs.google.com/spreadsheets/d/1cLHydvrlG6ZNgeznXWJLk1cLfvSbNpC10iksKwk7y4E
 
 **General parts / build notes:**
 
@@ -47,4 +47,4 @@ flounder is usually powered via the USB connection to your computer or another M
 
 **Videos:**
 
-https://www.youtube.com/watch?v=Wfl-h9pgLO8
+* https://www.youtube.com/watch?v=Wfl-h9pgLO8
