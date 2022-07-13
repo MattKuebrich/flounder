@@ -1,24 +1,29 @@
-// roundabout flounder
+/*  
 
-// program: blipo_2018
+flounder
 
-// description: an attempt to digitally emulate Rob Hordijk's Blippoo Box.
-// notes: this is based on the 2018 version of the Blippoo Box, explained here:
-// https://www.youtube.com/watch?v=ftyw5_hX4H0&t=306s
+program: blipo_2018
 
-// KNOB LAYOUT
+description: an attempt to digitally emulate Rob Hordijk's Blippoo Box.
 
-// RATE A         RATE B          PEAK 1                 PEAK 2
-// RUNGLER > A    RUNGLER > B     RUNGLER > PEAK 1       RUNGLER > PEAK 2
-// S&H > RATE A   S&H > RATE A    S&H SPREADS PEAKS      FILTER FEEDBACK
+notes: this is based on the 2018 version of the Blippoo Box, explained here:
+https://www.youtube.com/watch?v=ftyw5_hX4H0&t=306s
 
-// FIRST FUNCTION BUTTON = TOGGLES S&H MODE BETWEEN R MIX AND TRI B.
+knob layout:
 
-// further notes:
-// the on-board LED will light up when toggling between the S&H mode.
-// "filter feedback" crudely attempts to add the filter distortion in the original hardware.
-// rather than a fixed value, i've made this adjustable since this knob was original an "audio in"
-// which flounder doesn't support.
+RATE A         RATE B          PEAK 1                 PEAK 2
+RUNGLER > A    RUNGLER > B     RUNGLER > PEAK 1       RUNGLER > PEAK 2
+S&H > RATE A   S&H > RATE A    S&H SPREADS PEAKS      FILTER FEEDBACK
+
+FIRST FUNCTION BUTTON = TOGGLES S&H MODE BETWEEN R MIX AND TRI B.
+
+further notes:
+the on-board LED will light up when toggling between the S&H mode.
+"filter feedback" crudely attempts to add the filter distortion in the original hardware.
+rather than a fixed value, i've made this adjustable since this knob was original an "audio in"
+which flounder doesn't support.
+
+*/
 
 //set to 1 for use headphone output, 0 for line out
 int headphoneout = 0;

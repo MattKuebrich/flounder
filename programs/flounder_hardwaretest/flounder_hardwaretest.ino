@@ -1,15 +1,20 @@
-// roundabout flounder 
+/* 
 
-// program: hardwaretest v1.0
-// description: hardware test
-// notes: after assembling the pcb, run this sketch and follow these steps to verify everything works
+flounder 
 
-// 1. open the serial monitor, then move each of the 12 pots and you should see a readout from around 0 to 1024. in the ballpark is fine.
-// 2. touch all the keys and you should see a readout of around 64 when fully touched
-// 3. listen to the output and you should hear a sine tone from both channels
-// 4. setting the "detailedtesttouches" variable below to 1 will give a continuous FastTouch readout for all the touch keys. useful for debugging.
-// 5. all good!
+program: hardwaretest v1.0
 
+description: hardware test
+
+notes: after assembling the pcb, run this sketch and follow these steps to verify everything works
+
+1. open the serial monitor, then move each of the 12 pots and you should see a readout from around 0 to 1024. in the ballpark is fine.
+2. touch all the keys and you should see a readout of around 64 when fully touched
+3. listen to the output and you should hear a sine tone from both channels
+4. setting the "detailedtesttouches" variable below to 1 will give a continuous FastTouch readout for all the touch keys. useful for debugging.
+5. all good!
+
+*/
 byte detailedtesttouches = 0; 
 
 #include <Audio.h>

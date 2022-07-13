@@ -1,17 +1,22 @@
-// roundabout flounder
+/* 
 
-// program: blipo_v2
+flounder
 
-// description: an attempt to digitally emulate Rob Hordijk's Blippoo Box.
-// notes: this is based on the V2 version of the Blippoo Box (as is the Supercollider/Norns version).
+program: blipo_v2
 
-// KNOB LAYOUT
+description: an attempt to digitally emulate Rob Hordijk's Blippoo Box.
 
-//RATE A       RATE B      PEAK 1           PEAK 2
-//FM B TO A    FM A TO B   S&H TO RES       RUNGLER A TO RES
-//RUNGLER A    RUNGER B    S&H TO RATE A    RUNGLER B TO RES
+notes: this is based on the V2 version of the Blippoo Box (as is the Supercollider/Norns version).
 
-// FIRST FUNCTION BUTTON = TOGGLES S&H MODE 
+knob layout:
+
+RATE A       RATE B      PEAK 1           PEAK 2
+FM B TO A    FM A TO B   S&H TO RES       RUNGLER A TO RES
+RUNGLER A    RUNGER B    S&H TO RATE A    RUNGLER B TO RES
+
+FIRST FUNCTION BUTTON = TOGGLES S&H MODE 
+
+*/
 
 //set to 1 for use headphone output, 0 for line out
 int headphoneout = 0;
