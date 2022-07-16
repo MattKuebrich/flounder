@@ -7,9 +7,10 @@ usb midi keyboard + controls + stereo audio
 **Tech details:**
 * 12 MIDI mappable potentiometers
 * full octave touch keyboard
-* 6 function buttons
-* stereo output
-* programmable via Teensy 4.0 
+* 6 touch function buttons
+* stereo audio output
+* runs on Teensy 4.0 / fully reprogrammable
+* conceived as a [friend of norns](https://llllllll.co/t/friends-of-norns-gear-accessories-etc/17150) but works with anything that supports MIDI over USB
 
 **Programs:**
 
@@ -17,15 +18,27 @@ usb midi keyboard + controls + stereo audio
 
 *  **blipo_v2 / blipo_2018** are attempts to digitally emulate Rob Hordijk's Blippoo Box.
 
+* **pitta** is a polysynth with an ADSR, oscmix, filter with LFO, ensemble chorus, and reverb.
+
+* **monoenv** is an single mono oscillator and ADSR envelope, to demonstrate how the touch keyboard works. This can be a basis for a more complicated synth. It also works as a midi controller.
+
 *  **hardwaretest** helps verify that everything is working properly by sending knob/key values to the serial monitor.
 
 **BOM:**
 
-https://docs.google.com/spreadsheets/d/1cLHydvrlG6ZNgeznXWJLk1cLfvSbNpC10iksKwk7y4E
+* https://docs.google.com/spreadsheets/d/1cLHydvrlG6ZNgeznXWJLk1cLfvSbNpC10iksKwk7y4E
 
 **General parts / build notes:**
 
-This PCB requires minimal parts, but there are a few tricky bits. A SMD header is used to access the 10 SMD pads on the bottom of the Teensy 4.0, which isn't easy to solder. [This helpful video from Befaco](https://www.youtube.com/watch?v=itzAFOCuFH4) shows how to solder the SMD header (and the other pin headers).
+This PCB requires minimal parts, but there are a few tricky bits. A SMD header is used to access the 10 SMD pads on the bottom of the Teensy 4.0, which isn't easy to solder. [This helpful video from Befaco](https://www.youtube.com/watch?v=itzAFOCuFH4) shows how to solder the SMD header (and the other pin headers). 
+
+This is how the headers should look after they are soldered on the Teensy and PCB:
+<div style="display:flex">
+<img style="width: 400px;" src="https://github.com/MattKuebrich/flounder/blob/main/images/teensy4_SMDheader.jpg">
+<img style="width: 400px;" src="https://github.com/MattKuebrich/flounder/blob/main/images/flounder_v1.1_femalepinheaders.jpg">
+</div>
+
+When using [this SMD header](https://www.mouser.com/ProductDetail/Samtec/TSM-105-02-S-DV?qs=FZWyocRRknkkJe6o9Kq77Q%3D%3D&countrycode=US&currencycode=USD) from the BOM, its pins will need to be cut down a bit to match the length of the other pins. If anyone knows of a better part to use, let me know.
 
 Flounder uses the PT8211 stereo DAC chip, which isn't widely available, but can be found either as part of [this low cost kit from PJRC](https://www.pjrc.com/store/pt8211_kit.html), on [AliExpress](https://www.aliexpress.com/wholesale?catId=0&initiative_id=SB_20220626100338&SearchText=PT8211&spm=a2g0o.home.1000002.0) or [this alternative](https://www.lcsc.com/product-detail/Digital-To-Analog-Converters-DACs_TM8211_C92003.html) from LCSC, which I haven't tried but should work. 
 
@@ -40,3 +53,7 @@ The audio output uses both the on-board jack and USB audio. In code, the output 
 **Power:**
 
 flounder is usually powered via the USB connection to your computer or another MIDI host (like monome norns). When using it as an audio source, it can also be powered by a cellphone charger or portable power bank.
+
+**Videos:**
+
+* https://www.youtube.com/watch?v=Wfl-h9pgLO8
