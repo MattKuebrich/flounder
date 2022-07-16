@@ -11,7 +11,7 @@
   knob layout:
 
   ATTACK         DECAY          SUSTAIN                 RELEASE
-  TRI/SAW MIX    CUTOFF         RES                     NOTHING
+  TRI/SAW MIX    CUTOFF         RES                     DELAY
   LFO SPEED      LFO AMOUNT     REVERB MIX              REVERB TIME
 
   thanks to:
@@ -24,7 +24,6 @@
   https://github.com/GadgetReboot/ADSR_Envelope_Demo/blob/master/ADSR_Envelope_Demo.ino
   https://forum.arduino.cc/t/debouncing-capacitive-sensor/421300/3
   https://forum.pjrc.com/threads/65688-Stereo-Plate-Reverb-for-Teensy4-x
-  https://github.com/quarterturn/teensy3-ensemble-chorus
 
 */
 
@@ -38,7 +37,6 @@ int headphoneout = 0;
 #include <SerialFlash.h>
 
 #include "effect_platervbstereo.h"
-#include "effect_ensemble.h"
 
 #include <FastTouch.h>
 
@@ -48,8 +46,6 @@ int transpose = 0;
 int touchkeys[] = {0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 28, 29, 30, 31, 32, 33};
 int touches[19];
 int prevtouches[19];
-
-int volumefactor = 1;
 
 // for cc pots
 uint16_t prev_pot_val[12];
@@ -86,13 +82,6 @@ int   decayParam;
 float sustainParam;
 int   releaseParam;
 
-// store pot readings into pitch ADSR parameter settings
-int   attackParam_pitch;
-int   decayParam_pitch;
-float sustainParam_pitch;
-int   releaseParam_pitch;
-float pitchenvamt;
-
 float LFOamt;
 float LFOfreq;
 
@@ -106,9 +95,6 @@ float resonanceParam;
 
 uint8_t cc[12] = {CC01, CC02, CC03, CC04, CC05, CC06, CC07, CC08, CC09, CC10, CC11, CC12};
 uint8_t pot[12] = {POT01, POT02, POT03, POT04, POT05, POT06, POT07, POT08, POT09, POT10, POT11, POT12};
-
-// Use this MIDI channel.
-#define MIDI_CHANNEL 1
 
 #define POT_BIT_RES         10 // 10 works, 7-16 is valid
 #define POT_NUM_READS       32 // 32 works
@@ -129,82 +115,75 @@ const uint8_t nbrhd = 5;
 #include <SD.h>
 #include <SerialFlash.h>
 
-#include <Audio.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
-#include <SerialFlash.h>
-
 // GUItool: begin automatically generated code
-AudioSynthWaveformModulated waveformModB1;  //xy=750.6666831970215,147.66668510437012
-AudioSynthWaveformModulated waveformModA1;  //xy=754.6666831970215,111.66668510437012
-AudioSynthWaveformModulated waveformModA2;  //xy=757.6666831970215,217.66668510437012
-AudioSynthWaveformModulated waveformModB2;  //xy=757.6666831970215,257.6666851043701
-AudioSynthWaveformModulated waveformModA3;  //xy=760.6666831970215,312.6666851043701
-AudioSynthWaveformModulated waveformModA6;  //xy=759.6666831970215,609.6666851043701
-AudioSynthWaveformModulated waveformModB3;  //xy=761.6666831970215,345.6666851043701
-AudioSynthWaveformModulated waveformModA5;  //xy=762.6666831970215,502.6666851043701
-AudioSynthWaveformModulated waveformModB6;  //xy=762.6666831970215,639.6666851043701
-AudioSynthWaveformModulated waveformModB5;  //xy=763.6666831970215,538.6666851043701
-AudioSynthWaveformModulated waveformModB4;  //xy=764.6666831970215,432.6666851043701
-AudioSynthWaveformModulated waveformModA8;  //xy=763.6666831970215,802.6666851043701
-AudioSynthWaveformModulated waveformModA4;  //xy=765.6666831970215,398.6666851043701
-AudioSynthWaveformModulated waveformModB9;  //xy=763.6666831970215,955.6666851043701
-AudioSynthWaveformModulated waveformModA9;  //xy=766.6666831970215,919.6666851043701
-AudioSynthWaveformModulated waveformModA7;  //xy=767.6666831970215,699.6666851043701
-AudioSynthWaveformModulated waveformModB8;  //xy=767.6666831970215,839.6666851043701
-AudioSynthWaveformModulated waveformModA10; //xy=767.6666831970215,1054.6666851043701
-AudioSynthWaveformModulated waveformModB7;  //xy=776.6666831970215,733.6666851043701
-AudioSynthWaveformModulated waveformModB10; //xy=787.6666831970215,1093.6666851043701
-AudioSynthWaveformModulated waveformModA11; //xy=795.6666831970215,1154.6666851043701
-AudioSynthWaveformModulated waveformModB11; //xy=796.6666831970215,1189.6666851043701
-AudioSynthWaveformModulated waveformModB12; //xy=801.6666831970215,1293.6666851043701
-AudioSynthWaveformModulated waveformModA12; //xy=802.6666831970215,1261.6666851043701
-AudioSynthWaveformModulated waveformModA13; //xy=812.6666831970215,1357.6666851043701
-AudioSynthWaveformModulated waveformModB13; //xy=815.6666831970215,1397.6666851043701
-AudioMixer4              oscmixer3;      //xy=921.6666831970215,329.6666851043701
-AudioMixer4              oscmixer2;      //xy=923.6666831970215,229.66668510437012
-AudioMixer4              oscmixer1;      //xy=924.6666831970215,125.66668510437012
-AudioMixer4              oscmixer4;      //xy=924.6666831970215,430.6666851043701
-AudioMixer4              oscmixer5;      //xy=924.6666831970215,525.6666851043701
-AudioMixer4              oscmixer6;      //xy=933.6666831970215,616.6666851043701
-AudioMixer4              oscmixer7;      //xy=936.6666831970215,710.6666851043701
-AudioMixer4              oscmixer8;      //xy=938.6666831970215,827.6666851043701
-AudioMixer4              oscmixer9;      //xy=961.6666831970215,965.6666851043701
-AudioMixer4              oscmixer10;     //xy=973.6666831970215,1081.6666851043701
-AudioMixer4              oscmixer11;     //xy=1021.6666831970215,1209.6666851043701
-AudioMixer4              oscmixer13;     //xy=1037.6666831970215,1420.6666851043701
-AudioMixer4              oscmixer12;     //xy=1038.6666831970215,1326.6666851043701
-AudioEffectEnvelope      envelope5;      //xy=1065.6666831970215,528.6666851043701
-AudioEffectEnvelope      envelope3;      //xy=1069.6666831970215,334.6666851043701
-AudioEffectEnvelope      envelope4;      //xy=1073.6666831970215,427.6666851043701
-AudioEffectEnvelope      envelope2;      //xy=1079.6666831970215,220.66668510437012
-AudioEffectEnvelope      envelope8;      //xy=1085.6666831970215,835.6666851043701
-AudioEffectEnvelope      envelope6;      //xy=1087.6666831970215,614.6666851043701
-AudioEffectEnvelope      envelope7;      //xy=1092.6666831970215,718.6666851043701
-AudioEffectEnvelope      envelope1;      //xy=1096.6666831970215,121.66668510437012
-AudioEffectEnvelope      envelope9;      //xy=1134.6666831970215,963.6666851043701
-AudioEffectEnvelope      envelope10;     //xy=1137.6666831970215,1059.6666851043701
-AudioEffectEnvelope      envelope11;     //xy=1183.6666831970215,1189.6666851043701
-AudioEffectEnvelope      envelope12;     //xy=1224.6666831970215,1313.6666851043701
-AudioMixer4              mixer2;         //xy=1286.6666831970215,583.6666851043701
-AudioMixer4              mixer1;         //xy=1297.6666831970215,314.6666851043701
-AudioMixer4              mixer3;         //xy=1297.6666831970215,1011.6666851043701
-AudioEffectEnvelope      envelope13;     //xy=1314.6666831970215,1402.6666851043701
-AudioMixer4              mixer4;         //xy=1505.6666831970215,687.6666851043701
-AudioSynthWaveformModulated waveformMod17;  //xy=1526.666648864746,820.6667194366455
-AudioMixer4              mixer6;         //xy=1671.3333587646484,903.6666603088379
-AudioFilterLadder        ladder1;        //xy=1680.9999389648438,727.0000152587891
-AudioEffectEnsemble      ensemble;       //xy=1897.6665573120117,702.0000143051147
-AudioMixer4              mixerensembleR;   //xy=2118.6666831970215,890.6666851043701
-AudioMixer4              mixerensembleL;   //xy=2126.4166870117188,813.4167232513428
-AudioEffectPlateReverb   reverb;         //xy=2331.6666831970215,688.6666851043701
-AudioMixer4              mixerL;         //xy=2529.9167861938477,781.9166984558105
-AudioMixer4              mixerR;         //xy=2533.6666831970215,883.6666851043701
-AudioOutputUSB           usb1;           //xy=2670.50004196167,832.4167613983154
-AudioAmplifier           amp2;           //xy=2775.00004196167,906.2500143051147
-AudioAmplifier           amp1;           //xy=2780.00004196167,730.0000114440918
-AudioOutputPT8211        pt8211_1;       //xy=2975.00004196167,809.3333864212036
+AudioSynthWaveformModulated waveformModB1;  //xy=956.6666259765625,588.3333129882812
+AudioSynthWaveformModulated waveformModA1;  //xy=960.6666259765625,552.3333129882812
+AudioSynthWaveformModulated waveformModA2;  //xy=963.6666259765625,658.3333129882812
+AudioSynthWaveformModulated waveformModB2;  //xy=963.6666259765625,698.3333129882812
+AudioSynthWaveformModulated waveformModA3;  //xy=966.6666259765625,753.3333129882812
+AudioSynthWaveformModulated waveformModA6;  //xy=965.6666259765625,1050.3333129882812
+AudioSynthWaveformModulated waveformModB3;  //xy=967.6666259765625,786.3333129882812
+AudioSynthWaveformModulated waveformModA5;  //xy=968.6666259765625,943.3333129882812
+AudioSynthWaveformModulated waveformModB6;  //xy=968.6666259765625,1080.3333129882812
+AudioSynthWaveformModulated waveformModB5;  //xy=969.6666259765625,979.3333129882812
+AudioSynthWaveformModulated waveformModB4;  //xy=970.6666259765625,873.3333129882812
+AudioSynthWaveformModulated waveformModA8;  //xy=969.6666259765625,1243.3333129882812
+AudioSynthWaveformModulated waveformModA4;  //xy=971.6666259765625,839.3333129882812
+AudioSynthWaveformModulated waveformModB9;  //xy=969.6666259765625,1396.3333129882812
+AudioSynthWaveformModulated waveformModA9;  //xy=972.6666259765625,1360.3333129882812
+AudioSynthWaveformModulated waveformModA7;  //xy=973.6666259765625,1140.3333129882812
+AudioSynthWaveformModulated waveformModB8;  //xy=973.6666259765625,1280.3333129882812
+AudioSynthWaveformModulated waveformModA10; //xy=973.6666259765625,1495.3333129882812
+AudioSynthWaveformModulated waveformModB7;  //xy=982.6666259765625,1174.3333129882812
+AudioSynthWaveformModulated waveformModB10; //xy=993.6666259765625,1534.3333129882812
+AudioSynthWaveformModulated waveformModA11; //xy=1001.6666259765625,1595.3333129882812
+AudioSynthWaveformModulated waveformModB11; //xy=1002.6666259765625,1630.3333129882812
+AudioSynthWaveformModulated waveformModB12; //xy=1007.6666259765625,1734.3333129882812
+AudioSynthWaveformModulated waveformModA12; //xy=1008.6666259765625,1702.3333129882812
+AudioSynthWaveformModulated waveformModA13; //xy=1018.6666259765625,1798.3333129882812
+AudioSynthWaveformModulated waveformModB13; //xy=1021.6666259765625,1838.3333129882812
+AudioMixer4              oscmixer3;      //xy=1127.6666259765625,770.3333129882812
+AudioMixer4              oscmixer2;      //xy=1129.6666259765625,670.3333129882812
+AudioMixer4              oscmixer1;      //xy=1130.6666259765625,566.3333129882812
+AudioMixer4              oscmixer4;      //xy=1130.6666259765625,871.3333129882812
+AudioMixer4              oscmixer5;      //xy=1130.6666259765625,966.3333129882812
+AudioMixer4              oscmixer6;      //xy=1139.6666259765625,1057.3333129882812
+AudioMixer4              oscmixer7;      //xy=1142.6666259765625,1151.3333129882812
+AudioMixer4              oscmixer8;      //xy=1144.6666259765625,1268.3333129882812
+AudioMixer4              oscmixer9;      //xy=1167.6666259765625,1406.3333129882812
+AudioMixer4              oscmixer10;     //xy=1179.6666259765625,1522.3333129882812
+AudioMixer4              oscmixer11;     //xy=1227.6666259765625,1650.3333129882812
+AudioMixer4              oscmixer13;     //xy=1243.6666259765625,1861.3333129882812
+AudioMixer4              oscmixer12;     //xy=1244.6666259765625,1767.3333129882812
+AudioEffectEnvelope      envelope5;      //xy=1271.6666259765625,969.3333129882812
+AudioEffectEnvelope      envelope3;      //xy=1275.6666259765625,775.3333129882812
+AudioEffectEnvelope      envelope4;      //xy=1279.6666259765625,868.3333129882812
+AudioEffectEnvelope      envelope2;      //xy=1285.6666259765625,661.3333129882812
+AudioEffectEnvelope      envelope8;      //xy=1291.6666259765625,1276.3333129882812
+AudioEffectEnvelope      envelope6;      //xy=1293.6666259765625,1055.3333129882812
+AudioEffectEnvelope      envelope7;      //xy=1298.6666259765625,1159.3333129882812
+AudioEffectEnvelope      envelope1;      //xy=1302.6666259765625,562.3333129882812
+AudioEffectEnvelope      envelope9;      //xy=1340.6666259765625,1404.3333129882812
+AudioEffectEnvelope      envelope10;     //xy=1343.6666259765625,1500.3333129882812
+AudioEffectEnvelope      envelope11;     //xy=1389.6666259765625,1630.3333129882812
+AudioEffectEnvelope      envelope12;     //xy=1430.6666259765625,1754.3333129882812
+AudioMixer4              mixer2;         //xy=1492.6666259765625,1024.3333129882812
+AudioMixer4              mixer1;         //xy=1503.6666259765625,755.3333129882812
+AudioMixer4              mixer3;         //xy=1503.6666259765625,1452.3333129882812
+AudioEffectEnvelope      envelope13;     //xy=1520.6666259765625,1843.3333129882812
+AudioMixer4              mixer4;         //xy=1711.6666259765625,1128.3333129882812
+AudioSynthWaveformModulated waveformMod17;  //xy=1732.6666259765625,1261.3333129882812
+AudioMixer4              mixer6;         //xy=1877.6666259765625,1344.3333129882812
+AudioFilterLadder        ladder1;        //xy=1886.6666259765625,1168.3333129882812
+AudioMixer4              mixerdelay; //xy=2140.416534423828,1222.3332710266113
+AudioEffectDelay         delay1;         //xy=2155.750030517578,1413.7500190734863
+AudioEffectPlateReverb   reverb;         //xy=2537.6666259765625,1129.3333129882812
+AudioMixer4              mixerL;         //xy=2735.6666259765625,1222.3333129882812
+AudioMixer4              mixerR;         //xy=2739.6666259765625,1324.3333129882812
+AudioOutputUSB           usb1;           //xy=2876.6666259765625,1273.3333129882812
+AudioAmplifier           amp2;           //xy=2981.6666259765625,1347.3333129882812
+AudioAmplifier           amp1;           //xy=2986.6666259765625,1171.3333129882812
+AudioOutputPT8211        pt8211_1;       //xy=3181.6666259765625,1250.3333129882812
 AudioConnection          patchCord1(waveformModB1, 0, oscmixer1, 1);
 AudioConnection          patchCord2(waveformModA1, 0, oscmixer1, 0);
 AudioConnection          patchCord3(waveformModA2, 0, oscmixer2, 0);
@@ -263,24 +242,21 @@ AudioConnection          patchCord55(envelope13, 0, mixer4, 3);
 AudioConnection          patchCord56(mixer4, 0, ladder1, 0);
 AudioConnection          patchCord57(waveformMod17, 0, mixer6, 0);
 AudioConnection          patchCord58(mixer6, 0, ladder1, 1);
-AudioConnection          patchCord59(ladder1, 0, mixerensembleL, 1);
-AudioConnection          patchCord60(ladder1, ensemble);
-AudioConnection          patchCord61(ladder1, 0, ensemble, 1);
-AudioConnection          patchCord62(ladder1, 0, mixerensembleR, 1);
-AudioConnection          patchCord63(ensemble, 0, mixerensembleR, 0);
-AudioConnection          patchCord64(ensemble, 1, mixerensembleL, 0);
-AudioConnection          patchCord65(mixerensembleR, 0, reverb, 1);
-AudioConnection          patchCord66(mixerensembleR, 0, mixerR, 1);
-AudioConnection          patchCord67(mixerensembleL, 0, reverb, 0);
-AudioConnection          patchCord68(mixerensembleL, 0, mixerL, 1);
-AudioConnection          patchCord69(reverb, 0, mixerL, 0);
-AudioConnection          patchCord70(reverb, 1, mixerR, 0);
-AudioConnection          patchCord71(mixerL, 0, usb1, 0);
-AudioConnection          patchCord72(mixerL, amp1);
-AudioConnection          patchCord73(mixerR, 0, usb1, 1);
-AudioConnection          patchCord74(mixerR, amp2);
-AudioConnection          patchCord75(amp2, 0, pt8211_1, 1);
-AudioConnection          patchCord76(amp1, 0, pt8211_1, 0);
+AudioConnection          patchCord59(ladder1, 0, mixerdelay, 1);
+AudioConnection          patchCord60(mixerdelay, delay1);
+AudioConnection          patchCord61(mixerdelay, 0, reverb, 0);
+AudioConnection          patchCord62(mixerdelay, 0, reverb, 1);
+AudioConnection          patchCord63(mixerdelay, 0, mixerL, 1);
+AudioConnection          patchCord64(mixerdelay, 0, mixerR, 1);
+AudioConnection          patchCord65(delay1, 0, mixerdelay, 0);
+AudioConnection          patchCord66(reverb, 0, mixerL, 0);
+AudioConnection          patchCord67(reverb, 1, mixerR, 0);
+AudioConnection          patchCord68(mixerL, 0, usb1, 0);
+AudioConnection          patchCord69(mixerL, amp1);
+AudioConnection          patchCord70(mixerR, 0, usb1, 1);
+AudioConnection          patchCord71(mixerR, amp2);
+AudioConnection          patchCord72(amp2, 0, pt8211_1, 1);
+AudioConnection          patchCord73(amp1, 0, pt8211_1, 0);
 // GUItool: end automatically generated code
 
 //don't import this into teensy design tool, but may need to be adjusted manually
@@ -293,7 +269,7 @@ void setup() {
   Serial.begin(9600);
   analogReadResolution(POT_BIT_RES ); // set the analog read resolution to 7 bits (a range of 0 - 127)
   analogReadAveraging(POT_NUM_READS); // average the analog value by averaging 16 readings
-  AudioMemory(100);
+  AudioMemory(1000);
 
   if (headphoneout) {
     amp1.gain(0.1);  // lower output for headphones
@@ -310,6 +286,7 @@ void setup() {
   releaseParam = 250;
 
   ladder1.octaveControl(10);
+  delay1.delay(0, 300);
 
   mixer1.gain(0, 0.25); // all add up to .9, less than 1 which would clip
   mixer1.gain(1, 0.25);
@@ -337,6 +314,10 @@ void setup() {
 
 void loop() {
 
+  //print max audiomemory
+  int mem = AudioMemoryUsageMax();
+  Serial.println(mem);
+
   //ADSR
   attackParam  = map(analogRead(POT01), 0, 1023, 0, attackMax);
   decayParam   = map(analogRead(POT02), 0, 1023, 0, decayMax);
@@ -357,14 +338,12 @@ void loop() {
   cutoffParam = mapf(cutoffParam, 0, 50, 1, 50); //limit it a bit, was getting weird
   resonanceParam = mapf(analogRead(POT07), 0, 1023, 0, 0.8);
 
-  //chorus
-  float chorus_wetdry  = mapf(analogRead(POT08), 0, 1023, 0, 1.0);
-  mixerensembleL.gain(0, chorus_wetdry); //chorus
-  mixerensembleL.gain(1, 1); //dry signal
-  mixerensembleR.gain(0, chorus_wetdry); //chorus
-  mixerensembleR.gain(1, 1); //dry signal
+  //delay
+  float delayfeedback  = mapf(analogRead(POT08), 0, 1023, 0, 1.0);
+  mixerdelay.gain(0, 0.5 * delayfeedback); // delay signal
+  mixerdelay.gain(1, 1); //dry signal
 
-  //reverb
+  // reverb
   float reverb_wetdry  = mapf(analogRead(POT11), 0, 1023, 0, 1.0);
   mixerL.gain(0, reverb_wetdry); //reverb
   mixerL.gain(1, 1); //dry signal
@@ -378,24 +357,10 @@ void loop() {
   reverb.lodamp(0.1);   // amount of low end loss in the reverb tail
   reverb.hidamp(0.2);   // amount of treble loss in the reverb tail
 
-  for (uint8_t i = 0; i < 12; i++) {
-    uint16_t pot_val = analogRead(pot[i]);
-    if ((pot_val < prev_pot_val[i] - nbrhd) ||
-        (pot_val > prev_pot_val[i] + nbrhd)) {
-      usbMIDI.sendControlChange(cc[i], pot_val >> (POT_BIT_RES - 7), MIDI_CHANNEL);
-      prev_pot_val[i] = pot_val;
-    }
-  }
-
-  //MIDI Controllers should discard incoming MIDI messages.
-  while (usbMIDI.read()) {
-  }
-
   //populate touches array with current touched values
-  //tried changing to i and didnt work
   for (int x = 0; x <= 18; x++) {
 
-    // display fasttouch value
+    //   display fasttouch value
     //   Serial.print(touchkeys[x]);
     //   Serial.print(" =");
     //   Serial.println(fastTouchRead(touchkeys[x]));
@@ -404,10 +369,8 @@ void loop() {
       //special case for key 12 since it has a different sensitivity for some reason.
       if (fastTouchRead(touchkeys[x]) > 62) {
         touches[x] = 1;
-        //Serial.println("yas");
       } else if (fastTouchRead(touchkeys[x]) < 59) {
         touches[x] = 0;
-        //Serial.println("naw");
       }
     } else {
       if (fastTouchRead(touchkeys[x]) > 40) {
@@ -466,12 +429,10 @@ void loop() {
       envelope[i]->sustain(sustainParam);
       envelope[i]->release(releaseParam);
       envelope[i]->noteOn();
-      usbMIDI.sendNoteOn(notes[i] + transpose, 100, MIDI_CHANNEL); //should this be velocity of 100, like in ableton? or 128, full?
     }
 
     if (!(touches[i]) && (prevtouches[i])) {
       envelope[i]->noteOff();
-      usbMIDI.sendNoteOff(notes[i] + transpose, 0, MIDI_CHANNEL);
     }
     prevtouches[i] = touches[i];
   }
@@ -484,7 +445,6 @@ float midi2freq(int midinote) {
   float freq = 440 * pow(2, (midinote - 69.0) / 12.0);
   return freq;
 }
-
 
 // floating point map function taken from https://forum.arduino.cc/index.php?topic=361046.0
 double mapf(double x, double in_min, double in_max, double out_min, double out_max) {
