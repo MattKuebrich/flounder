@@ -57,3 +57,4 @@ flounder is usually powered via the USB connection to your computer or another M
 **Videos:**
 
 * https://www.youtube.com/watch?v=Wfl-h9pgLO8
+* https://www.youtube.com/watch?v=SwyNBVgNWY8
