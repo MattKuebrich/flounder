@@ -18,7 +18,7 @@ usb midi keyboard + controls + stereo audio
 
 *  **blipo_v2 / blipo_2018** are attempts to digitally emulate Rob Hordijk's Blippoo Box.
 
-* **pitta** is a polysynth with an ADSR, oscmix, filter with LFO, ensemble chorus, and reverb.
+* **pitta** is a polysynth with an ADSR, oscmix, filter with LFO, delay, and reverb.
 
 * **monoenv** is an single mono oscillator and ADSR envelope, to demonstrate how the touch keyboard works. This can be a basis for a more complicated synth. It also works as a midi controller.
 
