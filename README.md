@@ -52,7 +52,7 @@ The audio output uses both the on-board jack and USB audio. In code, the output 
 
 **USB Audio notes:**
 
-While testing code for flounder, I found it convenient to monitor the audio over USB, using VCV Rack like this:
+While testing code for flounder, I found it convenient to monitor the audio over USB, using [VCV Rack](https://vcvrack.com/) like this:
 
 <img style="width: 400px;" src="https://github.com/MattKuebrich/flounder/blob/main/images/vcv_usbaudio.jpg">
 
