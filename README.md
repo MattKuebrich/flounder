@@ -50,6 +50,14 @@ Plug the [(USB Micro-B to standard USB) cable](https://www.pjrc.com/store/cable_
 
 The audio output uses both the on-board jack and USB audio. In code, the output can be adjusted to be suitable for headphones or line level.
 
+**USB Audio notes:**
+
+While testing code for flounder, I found it convenient to monitor the audio over USB, using VCV Rack like this:
+
+<img style="width: 400px;" src="https://github.com/MattKuebrich/flounder/blob/main/images/vcv_usbaudio.jpg">
+
+A few caveats on this method. When flashing new code, the “Teensy MIDI_Audio” input will need to be refreshed. I’ve found the easiest way to do this is to delete the Audio 8 module and then Undo to bring it back. There also seems to be a general issue with Teensy 4.0 and USB Audio where a clicking sound will develop after awhile. There’s is a [fix documented on the PJRC forum](https://forum.pjrc.com/threads/54239-USB-Audio-Clicking-Noise?p=306552&viewfull=1#post306552), which involves modifying the usb_audio.cpp file in the core Teensy library. 
+
 **Power:**
 
 flounder is usually powered via the USB connection to your computer or another MIDI host (like monome norns). When using it as an audio source, it can also be powered by a cellphone charger or portable power bank.
