@@ -104,6 +104,9 @@ void setup() {
   decayParam = 50;
   sustainParam = 0.5;
   releaseParam = 250;
+  
+  envelope1.hold(0);
+  
   waveformMod1.begin(0.75f, 100.f, WAVEFORM_SAWTOOTH);
 }
 
@@ -114,6 +117,7 @@ void loop() {
   decayParam   = map(analogRead(POT02), 0, 1023, 0, decayMax);
   sustainParam = mapf(analogRead(POT03), 0, 1023, 0, 1.0);
   releaseParam = map(analogRead(POT04), 0, 1023, 0, releaseMax);
+
 
   for (uint8_t i = 0; i < 12; i++) {
     uint16_t pot_val = analogRead(pot[i]);
