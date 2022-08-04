@@ -28,7 +28,7 @@
 */
 
 //set to 1 for use headphone output, 0 for line out
-int headphoneout = 0;
+int headphoneout = 1;
 
 #include <Audio.h>
 #include <Wire.h>
@@ -284,6 +284,8 @@ void setup() {
   decayParam = 50;
   sustainParam = 0.5;
   releaseParam = 250;
+
+  envelope1.hold(0);
 
   ladder1.octaveControl(10);
   delay1.delay(0, 300);
