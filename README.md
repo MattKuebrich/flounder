@@ -44,9 +44,9 @@ Flounder uses the PT8211 stereo DAC chip, which isn't widely available, but can 
 
 **Software installation:**
 
-In order to program the Teensy 4.0, you'll need to install [TeensyDuino](https://www.pjrc.com/teensy/teensyduino.html). You'll also need to install the [FastTouch library](https://github.com/adrianfreed/FastTouch), which is needed for the touch keyboard. Download FastTouch from Github and then in TeensyDuino, go to Sketch -> Include Library -> Add .ZIP Library and select the .ZIP file. 
+In order to program the Teensy 4.0, you'll need to install [TeensyDuino](https://www.pjrc.com/teensy/teensyduino.html). Once installed, under Tools->Board->TeensyDuino, select Teensy 4.0. You'll also need to install the [FastTouch library](https://github.com/adrianfreed/FastTouch), which is needed for the touch keyboard. Download FastTouch from Github and then in TeensyDuino, go to Sketch -> Include Library -> Add .ZIP Library and select the .ZIP file. 
 
-Plug the [(USB Micro-B to standard USB) cable](https://www.pjrc.com/store/cable_usb_micro_b.html) from the Teensy to your computer. In TeensyDuino, under Tools->Port, you should see select the Teensy there. Also, Tools->USB Type should be set to "Serial + MIDI + Audio". 
+Plug the [(USB Micro-B to standard USB) cable](https://www.pjrc.com/store/cable_usb_micro_b.html) from the Teensy to your computer. In TeensyDuino, under Tools->Port, you should see the Teensy 4.0 there. Also, Tools->USB Type should be set to "Serial + MIDI + Audio". 
 
 The audio output uses both the on-board jack and USB audio. In code, the output can be adjusted to be suitable for headphones or line level.
 
